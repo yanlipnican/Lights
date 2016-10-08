@@ -5,31 +5,17 @@
 //  Created by Jan Lipnican on 05/10/2016.
 //  Copyright © 2016 Lipnican. All rights reserved.
 //
+//  Just window init and stuff here
+//  Renderer is initialized from here
+//
 
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
 #include <stdio.h>
 
-GLFWwindow* window;
+#include "Renderer.hpp"
 
-void setup() {
-    
-}
-
-void loop(){
-    
-    while(!glfwWindowShouldClose(window)) {
-        // wipe the drawing surface clear
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        // update other events like input handling
-        glfwPollEvents();
-        // put the stuff we've been drawing onto the display
-        glfwSwapBuffers(window);
-    }
-    
-}
 
 int main(int argc, const char * argv[]) {
     // start GL context and O/S window using the GLFW helper library
@@ -43,7 +29,7 @@ int main(int argc, const char * argv[]) {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     
-    window = glfwCreateWindow(1280, 720, "Lights", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(640, 420, "Lights", NULL, NULL);
     if (!window) {
         fprintf(stderr, "ERROR: could not open window with GLFW3\n");
         glfwTerminate();
@@ -60,8 +46,13 @@ int main(int argc, const char * argv[]) {
     glEnable(GL_DEPTH_TEST); // enable depth-testing
     glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
     
-    setup();
-    loop();
+    // setup renderer
+    Renderer* renderer = new Renderer(window);
+    renderer->setup();
+    glClearColor(0.5f, 0.5f, 0.7f, 0.0f);
+    while(!glfwWindowShouldClose(window)) {
+        renderer->loop();
+    }
     
     glfwTerminate();
     
